@@ -1,18 +1,3 @@
-pub fn affine_cipher(plain_text: &str, key: (u8, u8)) -> String {
-    let mut cipher_text = String::new();
-    for ch in plain_text.chars() {
-        if ch.is_alphabetic() {
-            let base = if ch.is_ascii_lowercase() { b'a' } else { b'A' };
-            let value = ((ch as u8 - base) * key.0 + key.1) % 26;
-            cipher_text.push((value + base) as char);
-        } else {
-            cipher_text.push(ch);
-        }
-    }
-
-    cipher_text
-}
-
 fn create_byte_list(keyword: &str) -> Vec<u8> {
     let mut byte_list = Vec::new(); // Create a new vector to hold the byte values
 

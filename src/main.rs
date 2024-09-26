@@ -1,7 +1,7 @@
 use crate::ciphers::lfsr::LFSR;
 use crate::utils::math_operations::euler_phi;
-use crate::ciphers::symmetric_ciphers::{shift_cipher, substitution_cipher};
-use crate::ciphers::weektwo_ciphers::{affine_cipher, vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
+use crate::ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
+use crate::ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
 
 pub mod ciphers;
 pub mod utils;
@@ -67,8 +67,10 @@ fn main() {
     println!("\nSubstitution:\nPlain: {}\nCipher: {}", plain_text, cipher_text); 
 
     let plain_text = "wewillmeetatmidnight";
-    let cipher_text = affine_cipher(plain_text, (3, 0));
+    let cipher_text = affine_cipher(plain_text, (3, 0), false);
     println!("\nAffine:\nPlain: {}\nCipher: {}", plain_text, cipher_text); 
+    let plain_text = affine_cipher(&cipher_text, (3, 0), true);
+    println!("Decrypted: {}", plain_text);
 
     let plain_text = "SECURITY";
     let key = "QUEEN";

@@ -24,3 +24,12 @@ pub fn factorial(n: u32) -> u32 {
     }
     result
 }
+
+pub fn mod_inverse(a: u8, m: u8) -> Option<u8> {
+    for x in 1..m {
+        if (a * x) % m == 1 {
+            return Some(x);
+        }
+    }
+    None
+}
