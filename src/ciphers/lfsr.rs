@@ -52,4 +52,8 @@ where F: Fn(u32) -> u32 {
         }
         (0, out_seq)
     }
+
+    pub fn print_period(&self, name: &str) {
+        println!("{}:\nPeriod: {}\nOut Seq: {:b}\n", name, self.period, self.out_seq);
+    }
 }

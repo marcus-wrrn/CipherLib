@@ -1,23 +1,11 @@
-use crate::ciphers::lfsr::LFSR;
-use crate::utils::math_operations::euler_phi;
-use crate::ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
-use crate::ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
+use ciphers::lfsr::LFSR;
+use utils::bit_operations::get_bit;
+use utils::math_operations::euler_phi;
+use ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
+use ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
 
 pub mod ciphers;
 pub mod utils;
-
-fn get_bit(x: u32, i: u32) -> u32 {
-    ((x >> i) & 1) as u32
-}
-
-// fn reverse_bits(x: u32, n: u32) -> u32 {
-//     let mut rev = 0;
-//     for i in 0..n {
-//         rev = rev << 1;
-//         rev += get_bit(x, i);
-//     }
-//     rev
-// }
 
 fn calc_affine_keys(m: u32) -> u32 {
     euler_phi(m) * m
@@ -40,13 +28,13 @@ fn main() {
 
     // Create the LFSR ciphers
     let fsr = LFSR::new(0b11001, 5, custom_out_fn);
-    println!("FSR1:\nPeriod: {}\nOut Seq: {:b}\n", fsr.period, fsr.out_seq);
+    fsr.print_period("FSR1");
     
     let fsr2 = LFSR::new(0b1011, 4, custom_out_fn2);
-    println!("FSR2:\nPeriod: {}\nOut Seq: {:b}\n", fsr2.period, fsr2.out_seq);
+    fsr2.print_period("FSR2");
 
     let fsr3 = LFSR::new(0b010011, 6, custom_out_fn3);
-    println!("FSR3:\nPeriod: {}\nOut Seq: {:b}\n", fsr3.period, fsr3.out_seq);
+    fsr3.print_period("LFSR3");
 
 
     // Calculate the number of keys
@@ -78,7 +66,7 @@ fn main() {
     println!("\nVigenere:\nPlain: {}\nCipher: {}", plain_text, cipher_text); 
 
     let plain_text = "shesellsseashellsbytheseashore";
-    let key: &[usize; 7] = &[3, 5, 1, 6, 7, 4, 2];
+    let key: &[usize; 6] = &[3, 6, 1, 5, 2, 4];
     let cipher_text = permutation_cipher(plain_text, key);
 
     println!("\nPermutation:\nPlain: {}\nCipher: {}", plain_text, cipher_text); 

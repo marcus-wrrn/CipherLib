@@ -24,13 +24,20 @@ pub fn vigenere_cipher(plain_text: &str, keyword: &str) -> String {
         }
 
         if ch.is_alphabetic() {
-            let key_index = keylist[key_ptr];
-
             let base = if ch.is_ascii_lowercase() { b'a' } else { b'A' };
-            let value = ((ch as u8 - base) + key_index) % 26;
-            cipher_text.push((value + base) as char );
+
+            let key_index = keylist.get(key_ptr);
+            match key_index {
+                Some(key_index) => {
+                    let value = ((ch as u8 - base) + key_index) % 26;
+                    cipher_text.push((value + base) as char );
+                },
+                None => {}
+            }
             key_ptr += 1;
-        } else {
+
+        } 
+        else {
             cipher_text.push(ch);
         }
     }
