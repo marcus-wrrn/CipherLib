@@ -1,6 +1,5 @@
 use crate::utils::bit_operations::reverse_bits;
 
-
 #[derive(Debug)]
 pub struct LFSR<F>
 where F: Fn(u32) -> u32 {

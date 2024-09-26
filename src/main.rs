@@ -1,4 +1,5 @@
 use crate::lfsr::LFSR;
+use crate::utils::math_operations::euler_phi;
 pub mod lfsr;
 pub mod utils;
 
@@ -14,6 +15,10 @@ fn get_bit(x: u32, i: u32) -> u32 {
 //     }
 //     rev
 // }
+
+fn calc_affine_keys(m: u32) -> u32 {
+    euler_phi(m) * m
+}
 
 fn main() {
     let custom_out_fn = |state: u32| -> u32 {
@@ -39,4 +44,10 @@ fn main() {
 
     let fsr3 = LFSR::new(0b010011, 6, custom_out_fn3);
     println!("FSR3:\nPeriod: {}\nOut Seq: {:b}\n", fsr3.period, fsr3.out_seq);
+
+
+    // Calculate the number of keys
+    println!("Number of keys for m = {}: {}", 17, calc_affine_keys(17));
+    println!("Number of keys for m = {}: {}", 20, calc_affine_keys(20));
+
 }
