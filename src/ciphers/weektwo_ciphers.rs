@@ -6,8 +6,7 @@ fn create_byte_list(keyword: &str) -> Vec<u8> {
             continue;
         }
         let base = if ch.is_ascii_lowercase() { b'a' } else { b'A' };
-        let value = ch as u8 - base;
-        byte_list.push(value); // Push the computed value into the vector
+        byte_list.push(ch as u8 - base); // Push the computed value into the vector
     }
 
     byte_list // Return the vector

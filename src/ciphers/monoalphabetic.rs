@@ -66,21 +66,32 @@ pub fn substitution_cipher(plain_text: &str, key: &[u8]) -> String {
 }
 
 pub fn affine_cipher(plain_text: &str, key: (u8, u8), decrypt: bool) -> String {
+    if key.0 > 26 || key.1 > 26 {
+        panic!("Affine key values cannot be greater than character space");
+    }
+    
     let mut cipher_text = String::new();
     let modulus = 26;
+    
     for ch in plain_text.chars() {
         if ch.is_alphabetic() {
             let base = if ch.is_ascii_lowercase() { b'a' } else { b'A' };
-
-            let value: u8;
+            let mut value: i32; // Use i32 for intermediate calculations
 
             if !decrypt {
-                value = ((ch as u8 - base) * key.0 + key.1) % modulus
+                // Encryption
+                value = (((ch as u8 - base) as i32 * key.0 as i32 + key.1 as i32) % modulus) as i32;
             } else {
-                let mod_inv = mod_inverse(key.0, modulus).expect("No modular inverse exists");
+                // Decryption
+                let mod_inv = mod_inverse(key.0 as u32, modulus as u32).expect("No modular inverse exists");
+                value = ((mod_inv as i32 * ((ch as u8 - base) as i32 - key.1 as i32)) % modulus) as i32;
 
-                value = (mod_inv * ((ch as u8 - base as u8) - key.1)) % modulus;
+                // Ensure the result is positive
+                if value < 0 {
+                    value += modulus;
+                }
             };
+
             cipher_text.push((value as u8 + base) as char);
         } else {
             cipher_text.push(ch);

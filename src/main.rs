@@ -1,15 +1,15 @@
 use ciphers::lfsr::LFSR;
 use utils::bit_operations::get_bit;
-use utils::math_operations::euler_phi;
+// use utils::math_operations::euler_phi;
 use ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
 use ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
 
 pub mod ciphers;
 pub mod utils;
 
-fn calc_affine_keys(m: u32) -> u32 {
-    euler_phi(m) * m
-}
+// fn calc_affine_keys(m: u32) -> u32 {
+//     euler_phi(m) * m
+// }
 
 fn main() {
     let custom_out_fn = |state: u32| -> u32 {
@@ -38,8 +38,8 @@ fn main() {
 
 
     // Calculate the number of keys
-    println!("Number of keys for m = {}: {}", 17, calc_affine_keys(17));
-    println!("Number of keys for m = {}: {}", 20, calc_affine_keys(20));
+    // println!("Number of keys for m = {}: {}", 17, calc_affine_keys(17));
+    // println!("Number of keys for m = {}: {}", 20, calc_affine_keys(20));
 
     let plain_text = "Wrgdb lv Wkxuvgdb";
     let k = 3;
