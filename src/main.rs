@@ -2,7 +2,7 @@ use ciphers::lfsr::LFSR;
 use utils::bit_operations::get_bit;
 // use utils::math_operations::euler_phi;
 use ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
-use ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher, reverse_permutation_cipher};
+use ciphers::weektwo_ciphers::{vigenere_cipher, permutation_cipher};
 
 pub mod ciphers;
 pub mod utils;
@@ -67,11 +67,11 @@ fn main() {
 
     let plain_text = "shesellsseashellsbytheseashore";
     let key: &[usize; 6] = &[3, 6, 1, 5, 2, 4];
-    let cipher_text = permutation_cipher(plain_text, key);
+    let cipher_text = permutation_cipher(plain_text, key, false);
 
     println!("\nPermutation:\nPlain: {}\nCipher: {}", plain_text, cipher_text); 
 
-    let plain_text = reverse_permutation_cipher(&cipher_text, key);
+    let plain_text = permutation_cipher(&cipher_text, key, true);
     println!("\nDecrypted: {}", plain_text);
 
 }

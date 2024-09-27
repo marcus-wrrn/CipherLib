@@ -53,45 +53,34 @@ fn perm_text_creation(text: &str, key: &[usize]) -> Vec<char> {
     cipher_text
 }
 
-pub fn permutation_cipher(plain_text: &str, key: &[usize]) -> String {
+pub fn permutation_cipher(plain_text: &str, key: &[usize], decrypt: bool) -> String {
     let mut cipher_text = perm_text_creation(plain_text, key);
 
     println!("Length of cipher text: {}", cipher_text.len());
     // Encrypt the plain text using the permutation key
     let mut key_ptr = 0;
     let mut delimeter = 0;
-    for ch in plain_text.chars() {
+    for (i, ch) in plain_text.chars().enumerate() {
         if key_ptr >= key.len() {
             key_ptr = 0;
             delimeter += key.len();
         }
-        // Ensure the index is valid for the key
-        cipher_text[key[key_ptr] - 1 + delimeter] = ch; // Permute the character according to the key
+        if !decrypt {
+            // Ensure the index is valid for the key
+            cipher_text[key[key_ptr] - 1 + delimeter] = ch; // Permute the character according to the key
+        } else {
+            let index = key.iter().position(|&x| x == i - delimeter + 1);
+            match index {
+                Some(index) => cipher_text[index + delimeter] = ch,
+                _ => {
+                    let current_cipher_text: String = cipher_text.iter().collect();
+                    let error_string = format!("Index: {}\nCurrent position: {}\nCipher text length: {}\nCurrent Cipher: {}", i - delimeter + 1, i, cipher_text.len(), current_cipher_text);
+                    panic!("{}", error_string);
+                },
+            }
+        }
         key_ptr += 1;
     }
 
     cipher_text.iter().collect() // Convert vector of chars back to String
-}
-
-pub fn reverse_permutation_cipher(cipher_text: &str, key: &[usize]) -> String {
-    let mut plain_text = perm_text_creation(cipher_text, key);
-
-    let mut key_ptr = 0;
-    let mut delimeter = 0;
-    for (i, ch) in cipher_text.chars().enumerate() {
-        if key_ptr >= key.len() {
-            key_ptr = 0;
-            delimeter += key.len();
-        }
-
-        if let Some(index) = key.iter().position(|&x| x == i - delimeter + 1) {
-            plain_text[index + delimeter] = ch;
-        } else {
-            println!("Fuck that isn't supposed to happen!");
-        }
-
-        key_ptr += 1;
-    }
-
-    plain_text.iter().collect()
 }
