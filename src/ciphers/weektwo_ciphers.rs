@@ -56,7 +56,7 @@ fn perm_text_creation(text: &str, key: &[usize]) -> Vec<char> {
 pub fn permutation_cipher(plain_text: &str, key: &[usize], decrypt: bool) -> String {
     let mut cipher_text = perm_text_creation(plain_text, key);
 
-    println!("Length of cipher text: {}", cipher_text.len());
+    //println!("Length of cipher text: {}", cipher_text.len());
     // Encrypt the plain text using the permutation key
     let mut key_ptr = 0;
     let mut delimeter = 0;
