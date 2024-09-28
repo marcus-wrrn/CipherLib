@@ -7,6 +7,7 @@ use ciphers::enigma::EnigmaMachine;
 
 pub mod ciphers;
 pub mod utils;
+pub mod tests;
 
 // fn calc_affine_keys(m: u32) -> u32 {
 //     euler_phi(m) * m
@@ -75,12 +76,12 @@ fn main() {
     let plain_text = permutation_cipher(&cipher_text, key, true);
     println!("Decrypted: {}", plain_text);
 
-    let plain_text = "aaaaaaa";//"helloworldmynameisjoe";
+    let plain_text = "hello";//"helloworldmynameisjoe";
     let mut enigma = EnigmaMachine::new(4, 26);
     let cipher_text = enigma.encrypt(plain_text);
     println!("\nEnigma:\nPlain: {}\nCipher: {}", plain_text, cipher_text);
     enigma.reset();
     let plain_text = enigma.decrypt(&cipher_text);
     println!("Decrypted: {}", plain_text);
-    
+
 }
