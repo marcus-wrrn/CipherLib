@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests {
+    use crate::ciphers::block_ciphers::sdes;
     use crate::ciphers::enigma::EnigmaMachine;
+    use crate::utils::scripts::initialize_substitution_blocks;
 
     #[test]
     fn enigma_1rotor () {
@@ -30,6 +32,20 @@ mod tests {
         enigma.reset();
         let cipher_text2 = enigma.encrypt(plain_text);
         assert_eq!(cipher_text1, cipher_text2);
+    }
+
+    #[test]
+    fn sdes_save() {
+        let filename = String::from("subbox.bin");
+        assert!(initialize_substitution_blocks(&filename));
+    }
+
+    #[test]
+    fn sdes_new() {
+        let subbox1 = sdes::SBox::new();
+        let subbox2 = sdes::SBox::new();
+
+        assert_ne!(subbox1.value(), subbox2.value());
     }
 }
 

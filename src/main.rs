@@ -9,10 +9,6 @@ pub mod ciphers;
 pub mod utils;
 pub mod tests;
 
-// fn calc_affine_keys(m: u32) -> u32 {
-//     euler_phi(m) * m
-// }
-
 fn main() {
     let custom_out_fn = |state: u32| -> u32 {
         (get_bit(state, 1) + get_bit(state, 0)) + get_bit(state, 3) & 1

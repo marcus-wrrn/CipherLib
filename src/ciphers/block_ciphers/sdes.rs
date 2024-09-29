@@ -1,3 +1,7 @@
+use std::io;
+use crate::utils::file_operations;
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 
 pub struct SBox {
     value: [[u8; 16]; 4],
@@ -5,13 +9,18 @@ pub struct SBox {
 
 impl SBox {
     pub fn new() -> Self {
+        let mut value: [[u8; 16]; 4] = [[0; 16]; 4]; 
+        let mut rng = thread_rng();
+        
+        for row in value.iter_mut() {
+            for (j, col) in row.iter_mut().enumerate() {
+                *col = j as u8;
+            }
+            row.shuffle(&mut rng);
+        }
+        
         SBox {
-            value: [
-                [14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
-                [0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8],
-                [4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0],
-                [15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13],
-            ],
+            value
         }
     }
 
@@ -52,54 +61,26 @@ impl SBoxes {
         }
     }
 
+    pub fn load_from_file(filename: &str) -> io::Result<Self> {
+        file_operations::read_substitution_boxes(filename)
+    }
+
+    pub fn clone(&self) -> Self {
+        let mut s_boxes = Vec::new();
+        for s_box in self.s_boxes.iter() {
+            s_boxes.push(SBox::from(s_box.value()));
+        }
+
+        SBoxes {
+            s_boxes,
+        }
+    }
+
+    pub fn save_to_file(&self, filename: &str) -> io::Result<()> {
+        file_operations::save_substitution_boxes_to_file(self.clone(), filename)
+    }
+
+    pub fn get_value(&self, s_box: u8, row: u8, col: u8) -> u8 {
+        self.s_boxes[s_box as usize].get_value(row, col)
+    }
 }
-// impl SBox {
-//     fn new() -> Self {
-//         SBox {
-//             s_boxes: vec![
-//                 vec![
-//                     vec![1, 0, 3, 2],
-//                     vec![3, 2, 1, 0],
-//                     vec![0, 2, 1, 3],
-//                     vec![3, 1, 3, 2],
-//                 ],
-//                 vec![
-//                     vec![0, 1, 2, 3],
-//                     vec![2, 0, 1, 3],
-//                     vec![3, 0, 1, 0],
-//                     vec![2, 1, 0, 3],
-//                 ],
-//                 // Add more S-boxes as needed
-//             ],
-//         }
-//     }
-
-//     fn get_value(&self, box_index: usize, row: usize, col: usize) -> u8 {
-//         self.s_boxes[box_index][row][col]
-//     }
-// }
-
-
-
-// impl SBox {
-//     fn new() -> Self {
-//         SBox {
-//             s0: [
-//                 [1, 0, 3, 2],
-//                 [3, 2, 1, 0],
-//                 [0, 2, 1, 3],
-//                 [3, 1, 3, 2],
-//             ],
-//             s1: [
-//                 [0, 1, 2, 3],
-//                 [2, 0, 1, 3],
-//                 [3, 0, 1, 0],
-//                 [2, 1, 0, 3],
-//             ],
-//         }
-//     }
-
-//     fn get_s0(&self, row: u8, col: u8) -> u8 {
-//         self.s0[row as usize][col as usize]
-//     }
-// }
