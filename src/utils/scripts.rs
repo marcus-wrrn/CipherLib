@@ -1,7 +1,7 @@
 use crate::utils::file_operations;
-use crate::ciphers::block_ciphers::sdes;
+use crate::ciphers::block_ciphers::des;
 
-pub fn load_default_subbox() -> sdes::SBoxes {
+pub fn load_default_subbox() -> des::SBoxes {
     let s1_box: [[u8; 16]; 4] = [
         [14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
         [0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8],
@@ -62,15 +62,15 @@ pub fn load_default_subbox() -> sdes::SBoxes {
         [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11],  // 1yyyy1
     ];
 
-    sdes::SBoxes::from(vec![
-        sdes::SBox::from(s1_box),
-        sdes::SBox::from(s2_box),
-        sdes::SBox::from(s3_box),
-        sdes::SBox::from(s4_box),
-        sdes::SBox::from(s5_box),
-        sdes::SBox::from(s6_box),
-        sdes::SBox::from(s7_box),
-        sdes::SBox::from(s8_box),
+    des::SBoxes::from(vec![
+        des::SBox::from(s1_box),
+        des::SBox::from(s2_box),
+        des::SBox::from(s3_box),
+        des::SBox::from(s4_box),
+        des::SBox::from(s5_box),
+        des::SBox::from(s6_box),
+        des::SBox::from(s7_box),
+        des::SBox::from(s8_box),
     ])
 }
 

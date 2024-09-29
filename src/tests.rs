@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::ciphers::block_ciphers::sdes;
+    use crate::ciphers::block_ciphers::des;
     use crate::ciphers::enigma::EnigmaMachine;
     use crate::utils::scripts::initialize_substitution_blocks;
 
@@ -42,8 +42,8 @@ mod tests {
 
     #[test]
     fn sdes_new() {
-        let subbox1 = sdes::SBox::new();
-        let subbox2 = sdes::SBox::new();
+        let subbox1 = des::SBox::new();
+        let subbox2 = des::SBox::new();
 
         assert_ne!(subbox1.value(), subbox2.value());
     }

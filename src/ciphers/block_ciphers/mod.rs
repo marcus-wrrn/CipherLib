@@ -1,2 +1,2 @@
 pub mod fiestel;
-pub mod sdes;
+pub mod des;

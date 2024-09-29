@@ -84,3 +84,66 @@ impl SBoxes {
         self.s_boxes[s_box as usize].get_value(row, col)
     }
 }
+
+pub struct ExpansionTable {
+    table: [u8; 48],
+}
+
+impl ExpansionTable {
+    pub fn default() -> Self {
+        let table = [
+            31, 0, 1, 2, 3, 4,
+            3, 4, 5, 6, 7, 8,
+            7, 8, 9, 10, 11, 12,
+            11, 12, 13, 14, 15, 16,
+            15, 16, 17, 18, 19, 20,
+            19, 20, 21, 22, 23, 24,
+            23, 24, 25, 26, 27, 28,
+            27, 28, 29, 30, 31, 0,
+        ];
+
+        ExpansionTable {
+            table
+        }
+    }
+
+    pub fn expand(&self, block: u32) -> u64 {
+        let mut result = 0;
+        for i in 0..48 {
+            let bit = (block >> (32 - self.table[i])) & 1;
+            result |= bit << (47 - i);
+        }
+
+        result as u64
+    }
+}
+
+pub struct PermutationTable {
+    table: [u8; 32],
+}
+
+impl PermutationTable {
+    pub fn default() -> Self {
+        let table = [
+            15, 6, 19, 20, 28, 11, 27, 16,
+            0, 14, 22, 25, 4, 17, 30, 9,
+            1, 7, 23, 13, 31, 26, 2, 8,
+            18, 12, 29, 5, 21, 10, 3, 24,
+        ];
+
+        PermutationTable {
+            table
+        }
+    }
+
+    pub fn permute(&self, block: u64) -> u64 {
+        let mut result = 0;
+        for i in 0..64 {
+            let bit = (block >> (63 - self.table[i])) & 1;
+            result |= bit << (63 - i);
+        }
+
+        result
+    }
+}
+

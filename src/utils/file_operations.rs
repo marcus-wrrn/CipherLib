@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::{self, Write, Read};
-use crate::ciphers::block_ciphers::sdes;
+use crate::ciphers::block_ciphers::des;
 
-pub fn save_substitution_boxes_to_file(sub_boxes: sdes::SBoxes, file_name: &str) -> io::Result<()> {
+pub fn save_substitution_boxes_to_file(sub_boxes: des::SBoxes, file_name: &str) -> io::Result<()> {
     let mut file = File::create(file_name)?;
 
     let num_boxes = sub_boxes.s_boxes.len() as u8;
@@ -20,7 +20,7 @@ pub fn save_substitution_boxes_to_file(sub_boxes: sdes::SBoxes, file_name: &str)
     Ok(())
 }
 
-pub fn read_substitution_boxes(file_name: &str) -> io::Result<sdes::SBoxes> {
+pub fn read_substitution_boxes(file_name: &str) -> io::Result<des::SBoxes> {
     let mut file = File::open(file_name)?;
     let mut buffer: [u8; 2] = [0; 2];
     file.read_exact(&mut buffer)?;
@@ -40,8 +40,8 @@ pub fn read_substitution_boxes(file_name: &str) -> io::Result<sdes::SBoxes> {
                 s_box[i][j] = *value;
             }            
         }
-        s_boxes.push(sdes::SBox::from(s_box));
+        s_boxes.push(des::SBox::from(s_box));
     }
 
-    Ok(sdes::SBoxes::from(s_boxes))
+    Ok(des::SBoxes::from(s_boxes))
 }
