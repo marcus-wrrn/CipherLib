@@ -8,7 +8,7 @@ where F: Fn(u32) -> u32 {
     pub size: usize,
     pub calc_output: F,
     pub period: u32,
-    pub out_seq: u32
+    pub out_seq: u64
 }
 
 impl<F> LFSR<F> 
@@ -38,14 +38,12 @@ where F: Fn(u32) -> u32 {
         out_bit
     }
 
-    fn calc_period(&mut self) -> (u32, u32) {
-        let mut out_seq = reverse_bits(self.initial_state, self.size as u32);
+    fn calc_period(&mut self) -> (u32, u64) {
+        let mut out_seq = reverse_bits(self.initial_state, self.size as u32) as u64;
 
-        for i in 0..1000 {
-            //print!("State: {:0width$b}", self.state,  width = self.size as usize);
+        for i in 0..50 {
             let out_bit = self.step();
-            //println!(" Out: {}", out_bit);
-            out_seq = (out_seq << 1) + out_bit;
+            out_seq = (out_seq << 1) + out_bit as u64;
             if self.state == self.initial_state {
                 return (i + 1, out_seq);
             }

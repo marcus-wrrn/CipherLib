@@ -27,7 +27,7 @@ mod tests {
     #[test]
     fn enigma_reset() {
         let mut enigma = EnigmaMachine::new(4, 26);
-        let plain_text = "hello world my name is charles, do you like bread, I like bread, fuck yeah fuck yeah fuck yeah";
+        let plain_text = "hello world my name is charles, this is a random long stream of text used to test the enigma machine using multiple rotors.";
         let cipher_text1 = enigma.encrypt(plain_text);
         enigma.reset();
         let cipher_text2 = enigma.encrypt(plain_text);

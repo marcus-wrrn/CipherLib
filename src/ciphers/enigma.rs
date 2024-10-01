@@ -84,6 +84,7 @@ impl EnigmaMachine {
         for ch in message.chars() {
             if !ch.is_alphabetic() {
                 cipher_text.push(ch);
+                
                 continue;
             }
 
