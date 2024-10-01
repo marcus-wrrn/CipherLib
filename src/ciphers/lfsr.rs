@@ -61,7 +61,7 @@ where F: Fn(u32) -> u32 {
             let period_check = self.check_period(&prev_seqs);
 
             if period_check != -1 {
-                return ((i - period_check) as u32, out_seq);
+                return ((i + 1 - period_check) as u32, out_seq);
             }
 
             // Add next state to the list of previous states

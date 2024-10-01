@@ -10,4 +10,4 @@ CipherLib is a collection of cipher algorithms including
 - Linear Feedback Stream Registers
 - Engima Machine (Still need to implement switchboard)
 
-Currently developing block cipher capability such as the Fiestel Network. 
+Currently developing block cipher capability such as the Fiestel Network & DES. 

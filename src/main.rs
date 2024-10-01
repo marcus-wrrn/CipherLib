@@ -13,43 +13,12 @@ fn main() {
     // TODO: Move this code to the tests module
     // For cipher usage this should be run as a cmd line tool
 
-    let custom_out_fn = |state: u32| -> u32 {
-        (get_bit(state, 1) + get_bit(state, 0)) + get_bit(state, 3) & 1
-    };
-
-    let custom_out_fn2 = |x: u32| -> u32 {
-        let val = !(get_bit(x, 3) * get_bit(x, 2) * get_bit(x, 1) + get_bit(x, 1) + get_bit(x, 0));
-        val & 1
-    };
-
-    let custom_out_fn3 = |x: u32| -> u32 {
-        (get_bit(x, 0) + get_bit(x, 3) + get_bit(x, 5)) & 1
-    };
-
     let custom_out_fn4 = |x: u32| -> u32 {
         (get_bit(x,5) + get_bit(x, 3) * get_bit(x, 1)) & 1
     };
 
-    let custom_out_fn5 = |x: u32| -> u32 {
-        (get_bit(x, 3) + get_bit(x, 0)) & 1
-    };
-
-
-    // Create the LFSR ciphers
-    let fsr = LFSR::new(0b11001, 5, custom_out_fn);
-    fsr.print_period("FSR1");
-    
-    let fsr2 = LFSR::new(0b1011, 4, custom_out_fn2);
-    fsr2.print_period("FSR2");
-
-    let fsr3 = LFSR::new(0b010011, 6, custom_out_fn3);
-    fsr3.print_period("LFSR3");
-
     let fsr4 = LFSR::new(0b110110, 6, custom_out_fn4);
-    fsr4.print_period("LFSR4");
-    
-    let fsr5 = LFSR::new(0b011011, 6, custom_out_fn5);
-    fsr5.print_period("LFSR5");
+    fsr4.print_period("LFSR");
 
     let plain_text = "Wrgdb lv Wkxuvgdb";
     let k = 3;
