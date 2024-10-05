@@ -58,7 +58,7 @@ mod tests {
         #[test]
         fn enigma_1rotor () {
             let mut enigma = EnigmaMachine::new(1, 26);
-            let plain_text = "hello world my name is charles, do you like bread, I like bread, fuck yeah fuck yeah fuck yeah";
+            let plain_text = "hello world my name is charles, do you like bread, I like bread";
             let cipher_text = enigma.encrypt(plain_text);
             enigma.reset();
             let decrypted_text = enigma.decrypt(&cipher_text);
@@ -92,12 +92,12 @@ mod tests {
 
         #[test]
         fn expansion_table() {
-            let expansion_table = ExpansionTable::default();
+            let expansion_table = ExpansionTable::new();
             let block: u32 = 0b11110000101010101111000010101010;
 
             let expanded_block = expansion_table.expand(block);
-
-            assert_eq!(expanded_block, 0b011110100001010101010101011110100001010101010101)
+            let expected_result = 0b011110100001010101010101011110100001010101010101;
+            assert_eq!(expanded_block, expected_result)
         }
 
         #[test]
@@ -113,7 +113,7 @@ mod tests {
             let block = 0b011100;
             let result = s_box.substitution(block);
             let expected_result = 0b0000;
-            assert_eq!(result, expected_result);
+            assert_eq!(result, expected_result)
         }
 
         #[test]
@@ -129,7 +129,7 @@ mod tests {
             let block = 0b010001;
             let result = s_box.substitution(block);
             let expected_result = 0b1100;
-            assert_eq!(result, expected_result);
+            assert_eq!(result, expected_result)
         }
 
         #[test]
@@ -145,7 +145,7 @@ mod tests {
             let block = 0b110011;
             let result = s_box.substitution(block);
             let expected_result = 12;
-            assert_eq!(result, expected_result);
+            assert_eq!(result, expected_result)
         }
 
         #[test]
@@ -155,7 +155,7 @@ mod tests {
             let result = sboxes.substitution(block);
             dbg!("Result: {:032b}", result);
             let expected_result = 0b0000_1100_0010_0001_0110_1101_0101_1100;
-            assert_eq!(result, expected_result);
+            assert_eq!(result, expected_result)
         }
 
         #[test]
@@ -165,7 +165,7 @@ mod tests {
             let permuted = perm_table.permute(block);
             let expected_result = 0b1001_1010_0001_1100_0010_0000_1011_1100;
             dbg!("Permuted: {:032b}", permuted);
-            assert_eq!(permuted, expected_result);
+            assert_eq!(permuted, expected_result)
         }
     }
 }
