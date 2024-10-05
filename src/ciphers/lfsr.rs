@@ -56,8 +56,6 @@ where F: Fn(u32) -> u32 {
             // Shift the output sequence to the left by 1 bit and add the output bit
             out_seq = (out_seq << 1) + out_bit;
 
-            
-
             let period_check = self.check_period(&prev_seqs);
 
             if period_check != -1 {

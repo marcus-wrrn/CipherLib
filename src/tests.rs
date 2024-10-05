@@ -151,7 +151,7 @@ mod tests {
         #[test]
         fn s_boxes() {
             let sboxes = des::SBoxes::new();
-            let block: u64 = 0b0111_0001_0001_0111_0011_0010_1110_0001_0101_1100_1111_0011;
+            let block = 0b0111_0001_0001_0111_0011_0010_1110_0001_0101_1100_1111_0011;
             let result = sboxes.substitution(block);
             dbg!("Result: {:032b}", result);
             let expected_result = 0b0000_1100_0010_0001_0110_1101_0101_1100;
