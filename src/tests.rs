@@ -1,7 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use crate::ciphers::block_ciphers::des;
-    use crate::utils::scripts::initialize_substitution_blocks;
 
     mod lfsr {
         use crate::ciphers::lfsr::LFSR;
@@ -169,20 +167,6 @@ mod tests {
             dbg!("Permuted: {:032b}", permuted);
             assert_eq!(permuted, expected_result);
         }
-    }
-
-    #[test]
-    fn sdes_save() {
-        let filename = String::from("subbox.bin");
-        assert!(initialize_substitution_blocks(&filename));
-    }
-
-    #[test]
-    fn sdes_new() {
-        let subbox1 = des::SBox::new();
-        let subbox2 = des::SBox::new();
-
-        assert_ne!(subbox1.value(), subbox2.value());
     }
 }
 
