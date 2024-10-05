@@ -4,6 +4,18 @@ pub fn get_bit(x: u32, i: u32) -> u32 {
     ((x >> i) & 1) as u32
 }
 
+pub fn get_bit_u64(x: u64, i: u8) -> u64 {
+    ((x >> i) & 1) as u64
+}
+
+pub fn get_bit_slice(value: u64, start: u8, end: u8) -> u64 {
+    // Create a mask for the bit range
+    let mask = (1u64 << (end - start + 1)) - 1;
+    
+    // Shift the value to align the desired bits with the least significant bit
+    (value >> start) & mask
+}
+
 /// Reverses the bits of a number up to the specified number of bits.
 /// # Parameters
 /// - `x`: The number to reverse the bits of.

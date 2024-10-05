@@ -48,8 +48,6 @@ impl Rotor {
 
 pub struct EnigmaMachine {
     rotors: Vec<Rotor>,
-    //reflector: Vec<u8>,
-    //keyspace: u8,
 }
 
 impl EnigmaMachine {
@@ -102,17 +100,6 @@ impl EnigmaMachine {
             }
             
             self.rotate_rotors();
-
-            // char_val =  if !decrypt {
-            //     self.reflector[char_val as usize]
-            // } else {
-            //     self.reflector.iter().position(|&x| x == char_val).map(|pos| pos as u8).unwrap_or(char_val)
-            // };
-
-            // for rotor in self.rotors.iter_mut().rev() {
-            //     char_val = rotor.step(char_val, !decrypt);
-            // }
-
             cipher_text.push(((char_val) + base_val as u8) as char);
         }
         cipher_text

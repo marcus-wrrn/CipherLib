@@ -88,6 +88,89 @@ mod tests {
         }
     }
 
+    mod block_ciphers {
+        use crate::ciphers::block_ciphers::des::ExpansionTable;
+        use crate::ciphers::block_ciphers::des;
+
+        #[test]
+        fn expansion_table() {
+            let expansion_table = ExpansionTable::default();
+            let block: u32 = 0b11110000101010101111000010101010;
+
+            let expanded_block = expansion_table.expand(block);
+
+            assert_eq!(expanded_block, 0b011110100001010101010101011110100001010101010101)
+        }
+
+        #[test]
+        fn sbox1() {
+            let s_box_temp: [[u8; 16]; 4] =  [
+                [14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
+                [0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8],
+                [4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0],
+                [15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13]
+            ];
+            let s_box = des::SBox::from(s_box_temp);
+
+            let block = 0b011100;
+            let result = s_box.substitution(block);
+            let expected_result = 0b0000;
+            assert_eq!(result, expected_result);
+        }
+
+        #[test]
+        fn sbox2() {
+            let s_box_temp: [[u8; 16]; 4] =  [
+                [15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10],
+                [3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5],
+                [0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15],
+                [13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9],
+            ];
+            let s_box = des::SBox::from(s_box_temp);
+
+            let block = 0b010001;
+            let result = s_box.substitution(block);
+            let expected_result = 0b1100;
+            assert_eq!(result, expected_result);
+        }
+
+        #[test]
+        fn sbox8() {
+            let s_box_temp: [[u8; 16]; 4] =  [
+                [13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],  // 0yyyy0
+                [1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2],  // 0yyyy1
+                [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8],  // 1yyyy0
+                [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11],  // 1yyyy1
+            ];
+            let s_box = des::SBox::from(s_box_temp);
+
+            let block = 0b110011;
+            let result = s_box.substitution(block);
+            let expected_result = 12;
+            assert_eq!(result, expected_result);
+        }
+
+        #[test]
+        fn s_boxes() {
+            let sboxes = des::SBoxes::new();
+            let block: u64 = 0b0111_0001_0001_0111_0011_0010_1110_0001_0101_1100_1111_0011;
+            let result = sboxes.substitution(block);
+            dbg!("Result: {:032b}", result);
+            let expected_result = 0b0000_1100_0010_0001_0110_1101_0101_1100;
+            assert_eq!(result, expected_result);
+        }
+
+        #[test]
+        fn perm_box() {
+            let perm_table = des::PermutationTable::new();
+            let block = 0b0000_1100_0010_0001_0110_1101_0101_1100;
+            let permuted = perm_table.permute(block);
+            let expected_result = 0b1001_1010_0001_1100_0010_0000_1011_1100;
+            dbg!("Permuted: {:032b}", permuted);
+            assert_eq!(permuted, expected_result);
+        }
+    }
+
     #[test]
     fn sdes_save() {
         let filename = String::from("subbox.bin");

@@ -4,6 +4,7 @@ use utils::bit_operations::get_bit;
 use ciphers::monoalphabetic::{shift_cipher, substitution_cipher, affine_cipher};
 use ciphers::polyalphabetic::{vigenere_cipher, permutation_cipher};
 use ciphers::enigma::EnigmaMachine;
+use ciphers::block_ciphers::des::{ExpansionTable, PermutationTable};
 
 pub mod ciphers;
 pub mod utils;
@@ -62,4 +63,54 @@ fn main() {
     let plain_text = enigma.decrypt(&cipher_text);
     println!("Decrypted: {}", plain_text);
 
+    let expansion_table = ExpansionTable::default();
+    let block: u32 = 0b11110000101010101111000010101010;
+
+    let expanded_block = expansion_table.expand(block);
+    println!("Expanded block: {:048b}", expanded_block);
+
+    let perm_table = PermutationTable::new();
+    let sub_block = 0b0000_1100_0010_0001_0110_1101_0101_1100;
+    let permuted = perm_table.permute(sub_block);
+    print_permuted(permuted);
+
+    let plaintext: [[u8; 4]; 4] = [
+        [0x00, 0x04, 0x08, 0x0C],
+        [0x01, 0x05, 0x09, 0x0D],
+        [0x02, 0x06, 0x0A, 0x0E],
+        [0x03, 0x07, 0x0B, 0x0F],
+    ];
+
+    let key: [[u8; 4]; 4] = [
+        [0x01, 0x01, 0x01, 0x01],
+        [0x01, 0x01, 0x01, 0x01],
+        [0x01, 0x01, 0x01, 0x01],
+        [0x01, 0x01, 0x01, 0x10],
+    ];
+
+    let mut state: [[u8; 4]; 4] = [[0; 4]; 4];
+    println!("\nQ4:");
+    for i in 0..4 {
+        for j in 0..4 {
+            state[i][j] = plaintext[i][j] ^ key[i][j];
+            print!("{:02x} ", state[i][j]);
+        }
+        println!();
+    }
+
+    // Shift rows
+    
+
+}
+
+
+fn print_permuted(permuted: u32) {
+    print!("Permuted: ");
+    for i in 0..32 {
+        if i != 0 && i % 4 == 0 {
+            print!(" ");
+        }
+        print!("{}", get_bit(permuted, i));
+    }
+    println!();
 }
