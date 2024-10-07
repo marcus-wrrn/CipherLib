@@ -89,6 +89,7 @@ mod tests {
     mod block_ciphers {
         use crate::ciphers::block_ciphers::des::ExpansionTable;
         use crate::ciphers::block_ciphers::des;
+        use crate::ciphers::block_ciphers::des::DES;
 
         #[test]
         fn expansion_table() {
@@ -166,6 +167,16 @@ mod tests {
             let expected_result = 0b1001_1010_0001_1100_0010_0000_1011_1100;
             dbg!("Permuted: {:032b}", permuted);
             assert_eq!(permuted, expected_result)
+        }
+
+        #[test]
+        fn des_encrypt() {
+            let key = 0b0001_0010_0011_0100_0101_0110_0111_1000_1001_1010_1011_1100_1101_1110_1111_0000;
+            let des = DES::new();
+            let plain_text = 0b0000_1100_0010_0001_0110_1101_0101_1100_0000_1100_0010_0001_0110_1101_0101_1100;
+            let cipher_text = des.encrypt(plain_text, key);
+            let expected_result = 0b1001_1010_0001_1100_0010_0000_1011_1100;
+            assert_eq!(cipher_text, expected_result)
         }
     }
 }

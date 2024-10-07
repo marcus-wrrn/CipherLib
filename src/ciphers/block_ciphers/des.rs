@@ -319,14 +319,10 @@ impl KeyPermutationTable {
     pub fn permute(&self, block: u64) -> u64 {
         const BIT_LENGTH: u8 = 55;
         let mut result = 0;
-        let row_length = 8;
-        let col_length = 7;
         for i in 0..56 {
             let index = self.table[i];
             let bit = get_bit_u64(block, BIT_LENGTH - index);
-            let row = i / row_length;
-            let col = i % col_length;
-            result |= bit << BIT_LENGTH - (row * row_length + col) as u8;
+            result |= bit << BIT_LENGTH - i as u8;
         }
         result
     }
@@ -354,18 +350,90 @@ impl KeyCompressionTable {
 
     pub fn permute(&self, block: u64) -> u64 {
         const BIT_LENGTH: u8 = 47;
-        let row_length = 8;
-        let col_length = 6;
-
         let mut result = 0;
         for i in 0..48 {
             let index = self.table[i];
             let bit = get_bit_u64(block, BIT_LENGTH - index);
-            let row = i / row_length;
-            let col = i % col_length;
-            result |= bit << BIT_LENGTH - (row * row_length + col) as u8;
+            result |= bit << BIT_LENGTH - i as u8;
         }
         result
     }
 }
 
+pub struct BitRotationTable {
+    table: [u8; 16],
+}
+
+impl BitRotationTable {
+    pub fn new() -> Self {
+        let table: [u8; 16] = [
+            1, 1, 2, 2, 2, 2, 2, 2,
+            1, 2, 2, 2, 2, 2, 2, 1,
+        ];
+
+        BitRotationTable {
+            table
+        }
+    }
+
+    pub fn rotate(&self, block: u64, round: u8) -> u64 {
+        let shift = self.table[round as usize];
+        let left = block >> 28;
+        let right = block & 0x0FFFFFFF;
+        let left_shifted = left.rotate_left(shift as u32);
+        let right_shifted = right.rotate_left(shift as u32);
+        (left_shifted << 28) | right_shifted
+    }
+}
+
+pub struct DES {
+    pub s_boxes: SBoxes,
+    pub expansion_table: ExpansionTable,
+    pub permutation_table: PermutationTable,
+    pub ip_table: IPTable,
+    pub ip_table_inverse: IPTable,
+    pub key_permutation_table: KeyPermutationTable,
+    pub key_compression_table: KeyCompressionTable,
+    pub bit_rotation_table: BitRotationTable,
+}
+
+impl DES {
+    pub fn new() -> Self {
+        DES {
+            s_boxes: SBoxes::new(),
+            expansion_table: ExpansionTable::new(),
+            permutation_table: PermutationTable::new(),
+            ip_table: IPTable::new(),
+            ip_table_inverse: IPTable::new_inverse(),
+            key_permutation_table: KeyPermutationTable::new(),
+            key_compression_table: KeyCompressionTable::new(),
+            bit_rotation_table: BitRotationTable::new(),
+        }
+    }
+
+
+    pub fn encrypt(&self, block: u64, key: u64) -> u64 {
+        let ip_out = self.ip_table.permute(block);
+        let left = (ip_out >> 32) as u32;
+        let right =  (ip_out & 0xFFFFFFFF) as u32;
+        dbg!(format!("Left: {:032b}", left));
+        dbg!(format!("Right: {:032b}", right));
+        let key = self.key_permutation_table.permute(key);
+        let key = self.bit_rotation_table.rotate(key, 0);
+        dbg!(format!("Key: {:064b}", key));
+        let r_expanded = self.expansion_table.expand(right);
+        let a = r_expanded ^ key;
+        dbg!(format!("A: {:048b}", a));
+
+        let a = self.s_boxes.substitution(a);
+        let a = self.permutation_table.permute(a);
+
+        let temp = right;
+        let right = a ^ left;
+        let left = temp;
+
+        let result = ((right as u64) << 32) + left as u64;
+        self.ip_table_inverse.permute(result)
+
+    }
+}
