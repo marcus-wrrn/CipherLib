@@ -295,4 +295,77 @@ impl IPTable {
     }
 }
 
+pub struct KeyPermutationTable {
+    table: [u8; 56],
+}
+
+impl KeyPermutationTable {
+    pub fn new() -> Self {
+        let table: [u8; 56] = [
+            56, 48, 40, 32, 24, 16, 8, 0,
+            57, 49, 41, 33, 25, 17, 9, 1,
+            58, 50, 42, 34, 26, 18, 10, 2,
+            59, 51, 43, 35, 62, 54, 46, 38,
+            30, 22, 14, 6, 61, 53, 45, 37,
+            29, 21, 13, 5, 60, 52, 44, 36,
+            28, 20, 12, 4, 27, 19, 11, 3,
+        ];
+
+        KeyPermutationTable {
+            table
+        }
+    }
+
+    pub fn permute(&self, block: u64) -> u64 {
+        const BIT_LENGTH: u8 = 55;
+        let mut result = 0;
+        let row_length = 8;
+        let col_length = 7;
+        for i in 0..56 {
+            let index = self.table[i];
+            let bit = get_bit_u64(block, BIT_LENGTH - index);
+            let row = i / row_length;
+            let col = i % col_length;
+            result |= bit << BIT_LENGTH - (row * row_length + col) as u8;
+        }
+        result
+    }
+}
+
+pub struct KeyCompressionTable {
+    table: [u8; 48],
+}
+
+impl KeyCompressionTable {
+    pub fn new() -> Self {
+        let table: [u8; 48] = [
+            13, 16, 10, 23, 0, 4, 2, 27,
+            14, 5, 20, 9, 22, 18, 11, 3,
+            25, 7, 15, 6, 26, 19, 12, 1,
+            40, 51, 30, 36, 46, 54, 29, 39,
+            50, 44, 32, 47, 43, 48, 38, 55,
+            33, 52, 45, 41, 49, 35, 28, 31,
+        ];
+
+        KeyCompressionTable {
+            table
+        }
+    }
+
+    pub fn permute(&self, block: u64) -> u64 {
+        const BIT_LENGTH: u8 = 47;
+        let row_length = 8;
+        let col_length = 6;
+
+        let mut result = 0;
+        for i in 0..48 {
+            let index = self.table[i];
+            let bit = get_bit_u64(block, BIT_LENGTH - index);
+            let row = i / row_length;
+            let col = i % col_length;
+            result |= bit << BIT_LENGTH - (row * row_length + col) as u8;
+        }
+        result
+    }
+}
 
