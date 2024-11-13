@@ -418,8 +418,8 @@ impl DES {
         let right =  (ip_out & 0xFFFFFFFF) as u32;
         dbg!(format!("Left: {:032b}", left));
         dbg!(format!("Right: {:032b}", right));
-        let key = self.key_permutation_table.permute(key);
-        let key = self.bit_rotation_table.rotate(key, 0);
+        let key = self.key_permutation_table.permute(key); // Test this method
+        let key = self.bit_rotation_table.rotate(key, 0); // Test this as well
         dbg!(format!("Key: {:064b}", key));
         let r_expanded = self.expansion_table.expand(right);
         let a = r_expanded ^ key;

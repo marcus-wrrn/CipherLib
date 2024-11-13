@@ -83,7 +83,7 @@ pub fn affine_cipher(plain_text: &str, key: (u8, u8), decrypt: bool) -> String {
                 value = (((ch as u8 - base) as i32 * key.0 as i32 + key.1 as i32) % modulus) as i32;
             } else {
                 // Decryption
-                let mod_inv = mod_inverse(key.0 as u32, modulus as u32).expect("No modular inverse exists");
+                let mod_inv: u32 = mod_inverse(key.0 as usize, modulus as usize).expect("No modular inverse exists").try_into().unwrap();
                 value = ((mod_inv as i32 * ((ch as u8 - base) as i32 - key.1 as i32)) % modulus) as i32;
 
                 // Ensure the result is positive

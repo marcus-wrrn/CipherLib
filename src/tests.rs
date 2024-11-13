@@ -169,6 +169,13 @@ mod tests {
             assert_eq!(permuted, expected_result)
         }
 
+        // #[test]
+        // fn key_perm_table() {
+        //     let key_perm_table = des::KeyPermutationTable::new();
+        //     let key: u64 = 0b0001_0010_0011_0100_0101_0110_0111_1000_1001_1010_1011_1100_1101_1110_1111_0000;
+            
+        // }
+
         #[test]
         fn des_encrypt() {
             let key = 0b0001_0010_0011_0100_0101_0110_0111_1000_1001_1010_1011_1100_1101_1110_1111_0000;
@@ -178,6 +185,32 @@ mod tests {
             let expected_result = 0b1001_1010_0001_1100_0010_0000_1011_1100;
             assert_eq!(cipher_text, expected_result)
         }
+    }
+
+    mod priv_pub_ciphers {
+        use crate::ciphers::elgamal::ELGaml;
+        #[test]
+        fn elgaml() {
+            // Create cipher
+            let p = 23;
+            let g = 11;
+            let private_key = 6;
+            let cipher = ELGaml::new(p, g, private_key);
+
+            // encrypt text
+            let m = 10; // plain text
+            let k = 3;
+            let cipher_text = cipher.encrypt(m, k);
+
+            assert_eq!(cipher_text, (20, 22));
+
+            // decrypt text
+            if let Some(decrypted_text) = cipher.decrypt(cipher_text) {
+                assert_eq!(decrypted_text, 10);
+            } else {
+                assert!(false);
+            }
+        }   
     }
 }
 
