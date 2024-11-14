@@ -189,6 +189,7 @@ mod tests {
 
     mod priv_pub_ciphers {
         use crate::ciphers::elgamal::ELGaml;
+        use crate::ciphers::rsa::{RSA, num_possible_keys};
         #[test]
         fn elgaml() {
             // Create cipher
@@ -211,6 +212,46 @@ mod tests {
                 assert!(false);
             }
         }   
+
+        #[test]
+        fn rsa_example1() {
+            let p = 23;
+            let q = 31;
+            let x = 49;
+
+            let rsa = RSA::new(p, q, x);
+
+            assert_eq!((713, 49), rsa.pk);
+            assert_eq!(229, rsa.sk);
+        }
+
+        #[test]
+        fn rsa_example2() {
+            let p = 17;
+            let q = 11;
+            let e = 7;
+
+            let rsa = RSA::new(p, q, e);
+
+            assert_eq!((187, 7), rsa.pk);
+            assert_eq!(23, rsa.sk);
+
+            let plain_text = 88;
+            let cipher_text = rsa.encrypt(plain_text);
+            assert_eq!(11, cipher_text);
+            let decrypted_text = rsa.decrypt(cipher_text);
+            assert_eq!(decrypted_text, plain_text);
+        }
+
+        #[test]
+        fn possible_keys() {
+            let p = 23;
+            let q = 31;
+
+            let possible_key_num = num_possible_keys(p, q);
+
+            assert_eq!(possible_key_num, 160);
+        }
     }
 }
 

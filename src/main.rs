@@ -3,6 +3,7 @@ pub mod ciphers {
     pub mod block_ciphers {
         pub mod des;
     }
+    pub mod rsa;
     pub mod lfsr;
     pub mod monoalphabetic;
     pub mod polyalphabetic;
