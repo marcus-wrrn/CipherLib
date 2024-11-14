@@ -206,11 +206,8 @@ mod tests {
             assert_eq!(cipher_text, (20, 22));
 
             // decrypt text
-            if let Some(decrypted_text) = cipher.decrypt(cipher_text) {
-                assert_eq!(decrypted_text, 10);
-            } else {
-                assert!(false);
-            }
+            let decrypted_text = cipher.decrypt(cipher_text);
+            assert_eq!(decrypted_text, 10);
         }   
 
         #[test]
