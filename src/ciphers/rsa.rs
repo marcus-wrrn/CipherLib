@@ -3,7 +3,6 @@ use num_bigint::ToBigUint;
 
 
 pub struct RSA {
-    pub e_n: u32,
     pub pk: (u32, u32),
     pub sk: u32,
 }
@@ -22,7 +21,6 @@ impl RSA {
         }
         
         Self {
-            e_n,
             pk: (n, e),
             sk: a as u32
         }

@@ -22,9 +22,5 @@ pub mod tests;
 
 
 fn main() {
-    let x = 8251;
-    let y = 6105;
-    let z = utils::math_operations::extended_gcd(x, y);
-
-    println!("GCD of {} and {} is {}", z.0, z.1, z.2);
+    
 }
