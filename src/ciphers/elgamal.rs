@@ -15,6 +15,19 @@ fn calc_pub_key(g: usize, p: usize, sk: u32) -> u32 {
     x.to_u32_digits()[0]
 }
 
+pub fn encrypt(g: usize, p: usize, pk: u32, m: u32, k: u32) -> (u32, u32) {
+    let g_big = g.to_biguint().unwrap();
+        let k_big = k.to_biguint().unwrap();
+        let p_big = p.to_biguint().unwrap();
+        let pk_big = pk.to_biguint().unwrap();
+
+        let ct0 = g_big.modpow(&k_big, &p_big);
+        let ct1 = (m * pk_big.pow(k)) % p_big;
+
+        
+        (ct0.to_u32_digits()[0], ct1.to_u32_digits()[0])
+}
+
 impl ELGaml {
     pub fn new(p: usize, g: usize, private_key: u32) -> Self {
         Self {
@@ -25,19 +38,8 @@ impl ELGaml {
         }
     }
 
-    
-
-    pub fn encrypt(&self, m: usize, k: u32) -> (u32, u32) {
-        let g_big = self.g.to_biguint().unwrap();
-        let k_big = k.to_biguint().unwrap();
-        let p_big = self.p.to_biguint().unwrap();
-        let pk_big = self.pub_k.to_biguint().unwrap();
-
-        let ct0 = g_big.modpow(&k_big, &p_big);
-        let ct1 = (m * pk_big.pow(k)) % p_big;
-
-        
-        (ct0.to_u32_digits()[0], ct1.to_u32_digits()[0])
+    pub fn encrypt(&self, m: u32, k: u32) -> (u32, u32) {
+        encrypt(self.g, self.p, self.pub_k, m, k)
     }
 
     pub fn decrypt(&self, cipher_text: (u32, u32)) -> u32 {

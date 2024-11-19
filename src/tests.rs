@@ -190,6 +190,9 @@ mod tests {
     mod priv_pub_ciphers {
         use crate::ciphers::elgamal::ELGaml;
         use crate::ciphers::rsa::{RSA, num_possible_keys};
+
+        use crate::ciphers::elliptic::{generate_group, EllipticCurve, Point};
+
         #[test]
         fn elgaml() {
             // Create cipher
@@ -248,6 +251,57 @@ mod tests {
             let possible_key_num = num_possible_keys(p, q);
 
             assert_eq!(possible_key_num, 160);
+        }
+
+        #[test]
+        fn elliptic_addition() {
+            let curve = EllipticCurve::new(1, 11);
+            let p = Point::new(2, 7);
+            let q = Point::new(5, 2);
+
+            let Some(next_point) = curve.addition(p, q) else {
+                panic!("Next point should not be infinite");
+            };
+
+            let check_point = Point::new(8, 3);
+            assert_eq!(next_point, check_point);
+        }
+
+        #[test]
+        fn elliptic_doubling() {
+            let curve = EllipticCurve::new(1, 11);
+            let p = Point::new(2, 7);
+            let Some(next_point) = curve.doubling(p) else {
+                panic!("Next point should not be infinite");
+            };
+
+            let check_point = Point::new(5, 2);
+            assert_eq!(next_point, check_point);
+        }
+
+        #[test]
+        fn group_generation() {
+            let curve = EllipticCurve::new(1, 11);
+            let p = Point::new(2, 7);
+            let correct_group = vec![
+                Point::new(2, 7),
+                Point::new(5, 2),
+                Point::new(8, 3),
+                Point::new(10, 2),
+                Point::new(3, 6),
+                Point::new(7, 9),
+                Point::new(7, 2),
+                Point::new(3, 5),
+                Point::new(10, 9),
+                Point::new(8, 8),
+                Point::new(5, 9),
+                Point::new(2, 4),
+            ];
+
+
+            let group = generate_group(curve, p);
+
+            assert_eq!(group, correct_group);
         }
     }
 }
