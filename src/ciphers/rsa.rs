@@ -1,5 +1,4 @@
-use crate::utils::math_operations::{euler_phi, extended_gcd};
-use num_bigint::ToBigUint;
+use crate::utils::math_operations::{euler_phi, extended_gcd, binary_decomposition, find_modulus};
 
 
 pub struct RSA {
@@ -27,26 +26,15 @@ impl RSA {
     }
 
     pub fn encrypt(&self, m: u32) -> u32 {
-        let m_big = m.to_biguint().unwrap();
-        let e_big = self.pk.0.to_biguint().unwrap();
-        let n_big = self.pk.1.to_biguint().unwrap();
-
-        // Modular exponentiation to calculate (m^n) % e
-        let x = m_big.modpow(&n_big, &e_big);
-    
-        // Convert result to u32, if it fits
-        let dat = x.to_u32_digits();
-
-        dat[0]
+        let pow_of_two = binary_decomposition(self.pk.1 as u64);
+        let result = find_modulus(pow_of_two, m as u64, self.pk.0 as u64);
+        result as u32
     }
 
     pub fn decrypt(&self, c: u32) -> u32 {
-        let c_big = c.to_biguint().unwrap();
-        let sk_big = self.sk.to_biguint().unwrap();
-        let n_big = self.pk.0.to_biguint().unwrap();
-
-        let x = c_big.modpow(&sk_big, &n_big);
-        x.to_u32_digits()[0]
+        let pow_of_two = binary_decomposition(self.sk as u64);
+        let result = find_modulus(pow_of_two, c as u64, self.pk.0 as u64);
+        result as u32
     }
 }
 

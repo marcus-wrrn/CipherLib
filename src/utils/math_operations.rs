@@ -69,3 +69,42 @@ pub fn mod_inverse(a: usize, m: usize) -> Option<usize> {
     }
     None
 }
+
+pub fn binary_decomposition(mut num: u64) -> Vec<u64> {
+    let mut powers_of_two = Vec::new();
+    let mut power = 0;
+
+    while num > 0 {
+        if num % 2 == 1 {
+            powers_of_two.push(2u64.pow(power));
+        }
+        num /= 2;
+        power += 1;
+    }
+
+    powers_of_two
+}
+
+pub fn find_modulus(powers_of_two: Vec<u64>, num: u64, d: u64) -> u64 {
+    let max_num = *powers_of_two.iter().max().unwrap();
+    let bit_num = 64 - max_num.leading_zeros();
+    let mut vec_mod: Vec<u64> = vec![num];
+
+    let mut current_val = num;
+    for _ in 0..bit_num - 1 {
+        let q = current_val.pow(2) % d;
+        vec_mod.push(q);
+
+        current_val = q;
+    }
+
+
+    let mut result = 1;
+    for number in powers_of_two {
+        let bit_num: usize = 63 - number.leading_zeros() as usize;
+        result *= vec_mod[bit_num];
+        result = result % d;
+    }
+
+    result
+}

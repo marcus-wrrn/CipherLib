@@ -1,5 +1,3 @@
-//use crate::utils::math_operations::mod_inverse;
-
 use crate::utils::math_operations::mod_inverse;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -17,28 +15,36 @@ impl Point {
     }
 }
 
+#[derive(Default)]
 pub struct EllipticCurve {
     a: i64,    
     group_num: i64,
+    order_num: usize,
+    pub group: Vec<Point>
 }
 
 impl EllipticCurve {
-    pub fn new(a: i64, group_num: i64) -> Self {
+    pub fn new(a: i64, group_num: i64, alpha: &Point) -> Self {
         if group_num < 0 {
             panic!("Group number cannot be negative");
         }
 
-        EllipticCurve {
+        let mut curve = EllipticCurve {
             a,
-            group_num
-        }
+            group_num,
+            ..Default::default()
+        };
+
+        let group = generate_group(&curve, *alpha);
+
+        curve.order_num = group.len();
+        curve.group = group;
+        
+
+        curve
     }
 
-    pub fn group_number(&self) -> usize {
-        self.group_num as usize
-    }
-
-    pub fn addition(&self, p: Point, q: Point) -> Option<Point> {
+    pub fn addition(&self, p: &Point, q: &Point) -> Option<Point> {
         let numerator = (q.y - p.y).rem_euclid(self.group_num);
         let denominator = (q.x - p.x).rem_euclid(self.group_num);
 
@@ -54,7 +60,7 @@ impl EllipticCurve {
         return Some(Point::new(x3, y3));
     }
 
-    pub fn doubling(&self, p: Point) -> Option<Point> {
+    pub fn doubling(&self, p: &Point) -> Option<Point> {
         let numerator = (3 * p.x.pow(2) + self.a).rem_euclid(self.group_num);
         let denominator = (2 * p.y).rem_euclid(self.group_num);
 
@@ -73,7 +79,7 @@ impl EllipticCurve {
 
 /// Method for generating groups taking a generator point p and a curve
 /// Returns a group up to the point at infinity
-pub fn generate_group(curve: EllipticCurve, p: Point) -> Vec<Point> {
+pub fn generate_group(curve: &EllipticCurve, p: Point) -> Vec<Point> {
     let mut group_vals: Vec<Point> = vec![];
 
     let mut q = p;
@@ -81,9 +87,9 @@ pub fn generate_group(curve: EllipticCurve, p: Point) -> Vec<Point> {
         group_vals.push(q);
 
         let next_q = if p == q {
-            curve.doubling(p)
+            curve.doubling(&p)
         } else {
-            curve.addition(p, q)
+            curve.addition(&p, &q)
         };
 
         // If next point is defined set it to q else break out of the loop

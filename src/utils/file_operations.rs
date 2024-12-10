@@ -23,14 +23,21 @@ pub fn save_substitution_boxes_to_file(sub_boxes: des::SBoxes, file_name: &str) 
 pub fn read_substitution_boxes(file_name: &str) -> io::Result<des::SBoxes> {
     let mut file = File::open(file_name)?;
     let mut buffer: [u8; 2] = [0; 2];
-    file.read_exact(&mut buffer)?;
+    
+    match file.read_exact(&mut buffer) {
+        Ok(_) => {},
+        Err(e) => return Err(e)
+    };
 
     let num_boxes = buffer[0] as usize;
     let row_size = buffer[1] as usize;
 
     let mut buffer = vec![0; num_boxes * row_size * 16];
 
-    file.read_exact(&mut buffer)?;
+    match file.read_exact(&mut buffer) {
+        Ok(_) => {},
+        Err(e) => return  Err(e)
+    };
 
     let mut s_boxes = Vec::new();
     for block in buffer.chunks(row_size * 16) {

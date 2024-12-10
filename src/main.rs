@@ -1,4 +1,4 @@
-use ciphers::elliptic::{EllipticCurve, Point, generate_group};
+//use utils::math_operations::mod_inverse;
 
 pub mod ciphers {
     pub mod block_ciphers {
@@ -18,18 +18,29 @@ pub mod utils {
     pub mod math_operations;
     pub mod bit_operations;
     pub mod file_operations;
+    pub mod file_encryption;
 }
 
 pub mod tests;
 
 
+
+
+use ciphers::rsa::RSA;
+
 fn main() {
-    let curve = EllipticCurve::new(1, 23);
-    let generator_point = Point{x: 3, y: 10};
+    let p = 29;
+    let q = 11;
+    let x = 17;
+    let m = 21;
 
-    let group = generate_group(curve, generator_point);
+    let rsa = RSA::new(p, q, x);
 
-    for i in 0..group.len() {
-        println!("{}P: ({}, {})", i + 1, group[i].x, group[i].y);
-    }
+    
+    println!("PK: {:?}, SK: {}", rsa.pk, rsa.sk);
+
+    let ct = rsa.encrypt(m);
+    let pt = rsa.decrypt(ct);
+
+    println!("CT: {}, PT: {}", ct, pt);
 }
