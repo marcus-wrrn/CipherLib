@@ -108,3 +108,8 @@ pub fn find_modulus(powers_of_two: Vec<u64>, num: u64, d: u64) -> u64 {
 
     result
 }
+
+pub fn modpow(a: u64, exp: u64, d: u64) -> u64 {
+    let pow_two = binary_decomposition(exp);
+    find_modulus(pow_two, a, d)
+}

@@ -253,31 +253,31 @@ mod tests {
             assert_eq!(possible_key_num, 160);
         }
 
-        // #[test]
-        // fn elliptic_addition() {
-        //     let curve = EllipticCurve::new(1, 11);
-        //     let p = Point::new(2, 7);
-        //     let q = Point::new(5, 2);
+        #[test]
+        fn elliptic_addition() {
+            let curve = EllipticCurve::new(1, 11, &Point::new(2, 7));
+            let p = Point::new(2, 7);
+            let q = Point::new(5, 2);
 
-        //     let Some(next_point) = curve.addition(p, q) else {
-        //         panic!("Next point should not be infinite");
-        //     };
+            let Some(next_point) = curve.addition(&p, &q) else {
+                panic!("Next point should not be infinite");
+            };
 
-        //     let check_point = Point::new(8, 3);
-        //     assert_eq!(next_point, check_point);
-        // }
+            let check_point = Point::new(8, 3);
+            assert_eq!(next_point, check_point);
+        }
 
-        // #[test]
-        // fn elliptic_doubling() {
-        //     let curve = EllipticCurve::new(1, 11);
-        //     let p = Point::new(2, 7);
-        //     let Some(next_point) = curve.doubling(p) else {
-        //         panic!("Next point should not be infinite");
-        //     };
+        #[test]
+        fn elliptic_doubling() {
+            let curve = EllipticCurve::new(1, 11, &Point::new(2, 7));
+            let p = Point::new(2, 7);
+            let Some(next_point) = curve.doubling(&p) else {
+                panic!("Next point should not be infinite");
+            };
 
-        //     let check_point = Point::new(5, 2);
-        //     assert_eq!(next_point, check_point);
-        // }
+            let check_point = Point::new(5, 2);
+            assert_eq!(next_point, check_point);
+        }
 
         #[test]
         fn group_generation() {
